@@ -1,0 +1,11 @@
+#
+# Pipfile
+#
+
+[packages]
+numpy = "*"
+pandas = "*"
+
+[dev-packages]
+ipykernel = "*"
+notebook = "*"

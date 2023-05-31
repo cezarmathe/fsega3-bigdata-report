@@ -1,0 +1,77 @@
+%
+% report.tex
+%
+
+\documentclass[a4paper, 12pt]{report}
+
+\usepackage[top=3cm, bottom=3cm, left = 2cm, right = 2cm]{geometry}
+
+\usepackage[utf8]{inputenc}
+
+\usepackage{setspace}
+\onehalfspacing
+
+\usepackage{fontspec}
+\usepackage{polyglossia}
+\setdefaultlanguage{romanian}
+\SetLanguageKeys{romanian}{indentfirst=true}
+
+\usepackage{csquotes}
+\DeclareQuoteStyle{romanian}
+  {\quotedblbase}
+  {\textquotedblright}
+  {\guillemotleft}
+  {\guillemotright}
+
+
+\usepackage{graphicx}
+\graphicspath{./assets/}
+
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd{\chapter}{\if@openright\cleardoublepage\else\clearpage\fi}{}{}{}
+\makeatother
+
+\usepackage{titlesec}
+\titleformat{\chapter}[hang]
+{\normalfont\huge\bfseries}{\thechapter.}{0.5em}{}
+
+\renewenvironment{abstract}
+{\small\quotation
+{\bfseries\noindent{\large\abstractname}\par\nobreak\smallskip}}
+{\endquotation}
+
+\usepackage{lipsum}
+
+% might want not to remove page breaks after all
+
+\begin{document}
+
+\begin{center}
+  \Large
+  \textbf{Raport privind cercetarea și analiza unui set de date despre filme}
+
+  \vspace{1cm}
+
+  \large
+
+  Mathe Armand Cezar \\
+  Tritean Sergiu Daniel
+
+  \vspace{0.5cm}
+  Iunie 2023
+
+  \vspace{2cm}
+\end{center}
+
+\begin{abstract}
+  \lipsum[1]
+\end{abstract}
+
+\tableofcontents
+
+\chapter{Introducere}
+
+\lipsum[1]
+
+\end{document}
