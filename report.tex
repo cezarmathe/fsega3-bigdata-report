@@ -4,18 +4,21 @@
 
 \documentclass[a4paper, 12pt]{report}
 
-\usepackage[top=3cm, bottom=3cm, left = 2cm, right = 2cm]{geometry}
-
+% UTF-8 characters.
 \usepackage[utf8]{inputenc}
 
-\usepackage{setspace}
-\onehalfspacing
+% Page format.
+\usepackage[top=3cm, bottom=3cm, left = 2cm, right = 2cm]{geometry}
 
+% 1.2 line spacing.
+\usepackage{setspace}
+\spacing{1.2}
+
+% Romanian language support.
 \usepackage{fontspec}
 \usepackage{polyglossia}
 \setdefaultlanguage{romanian}
 \SetLanguageKeys{romanian}{indentfirst=true}
-
 \usepackage{csquotes}
 \DeclareQuoteStyle{romanian}
   {\quotedblbase}
@@ -23,54 +26,80 @@
   {\guillemotleft}
   {\guillemotright}
 
-
+% Embed images.
 \usepackage{graphicx}
 \graphicspath{./assets/}
 
+% No page breaks between chapters.
 \usepackage{etoolbox}
 \makeatletter
 \patchcmd{\chapter}{\if@openright\cleardoublepage\else\clearpage\fi}{}{}{}
 \makeatother
 
+% Chapter number and title on the same line.
 \usepackage{titlesec}
 \titleformat{\chapter}[hang]
 {\normalfont\huge\bfseries}{\thechapter.}{0.5em}{}
 
+% Abstract on the same page.
 \renewenvironment{abstract}
 {\small\quotation
 {\bfseries\noindent{\large\abstractname}\par\nobreak\smallskip}}
 {\endquotation}
 
+% Metadata and title.
+\usepackage{titling}
+\title{Raport privind cercetarea și analiza unui set de date despre filme}
+\author{Mathe Armand Cezar \\ Tritean Sergiu Daniel}
+\date{Iunie 2023}
+\renewcommand{\maketitle}{
+  \begin{center}
+    \Large
+    \textbf{\thetitle}
+
+    \vspace{1cm}
+
+    \large
+
+    \theauthor
+
+    \vspace{0.5cm}
+    \thedate
+
+    \vspace{2cm}
+  \end{center}
+}
+
 \usepackage{lipsum}
 
-% might want not to remove page breaks after all
-
+% Document.
 \begin{document}
 
-\begin{center}
-  \Large
-  \textbf{Raport privind cercetarea și analiza unui set de date despre filme}
-
-  \vspace{1cm}
-
-  \large
-
-  Mathe Armand Cezar \\
-  Tritean Sergiu Daniel
-
-  \vspace{0.5cm}
-  Iunie 2023
-
-  \vspace{2cm}
-\end{center}
+\maketitle
 
 \begin{abstract}
   \lipsum[1]
 \end{abstract}
 
+\pagebreak
+
 \tableofcontents
 
+\pagebreak
+
 \chapter{Introducere}
+
+\lipsum[1]
+
+\chapter{Setul de date}
+
+\lipsum[1]
+
+\chapter{Rezultate si discuții}
+
+\lipsum[1]
+
+\chapter{Concluzia}
 
 \lipsum[1]
 
