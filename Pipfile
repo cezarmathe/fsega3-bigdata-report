@@ -3,9 +3,9 @@
 #
 
 [packages]
-numpy = "*"
-pandas = "*"
+numpy = "==1.24.3"
+pandas = "==2.0.2"
 
 [dev-packages]
-ipykernel = "*"
-notebook = "*"
+ipykernel = "==6.23.1"
+notebook = "==6.5.4"
