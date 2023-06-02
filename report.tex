@@ -50,24 +50,37 @@
 % Metadata and title.
 \usepackage{titling}
 \title{Raport privind cercetarea și analiza unui set de date despre filme}
-\author{Mathe Armand Cezar \\ Tritean Sergiu Daniel}
+\author{
+  Mathe Armand Cezar
+  \hspace{2cm}
+  Tritean Sergiu Daniel
+}
 \date{Iunie 2023}
 \renewcommand{\maketitle}{
-  \begin{center}
-    \Large
-    \textbf{\thetitle}
+  \begin{titlepage}
+    \begin{center}
+      \large
+      \textbf{Universitatea Babeș-Bolyai} \\
+      \vspace{0.5cm}
+      \textbf{Facultatea de Științe Economice și Gestiunea Afacerilor}\\
+      \vspace{0.5cm}
+      \textbf{Specializarea Informatică Economică}
 
-    \vspace{1cm}
+      \vspace{7cm}
 
-    \large
+      \Huge
+      \thetitle
 
-    \theauthor
+      \vspace{6cm}
 
-    \vspace{0.5cm}
-    \thedate
+      \large
+      \theauthor
 
-    \vspace{2cm}
-  \end{center}
+      \vspace{3.7cm}
+
+      \thedate
+    \end{center}
+  \end{titlepage}
 }
 
 \usepackage{lipsum}
@@ -76,10 +89,6 @@
 \begin{document}
 
 \maketitle
-
-\begin{abstract}
-  \lipsum[1]
-\end{abstract}
 
 \pagebreak
 
