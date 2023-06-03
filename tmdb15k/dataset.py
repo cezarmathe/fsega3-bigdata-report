@@ -7,6 +7,12 @@ import pandas as pd
 from abc import ABC, abstractmethod
 from typing import Callable
 
+DATASET_PATH = 'datasets/tmdb-15000-movies.csv'
+
+"""Load the dataset."""
+def load() -> pd.DataFrame:
+    return pd.read_csv(DATASET_PATH, lineterminator='\n')
+
 """
 ColumnProcessor is an abstract class that defines a method that takes in a
 DataFrame, a source column name, and a destination column name. The method
@@ -18,7 +24,10 @@ class ColumnProcessor(ABC):
     def apply(self, df: pd.DataFrame, src: str, dst: str) -> pd.DataFrame:
         pass
 
-def process_column(df: pd.DataFrame, src: str, dst: str, processors: list[ColumnProcessor]) -> pd.DataFrame:
+def process_column(df: pd.DataFrame, src: str, dst: str, processors: ColumnProcessor | list[ColumnProcessor]) -> pd.DataFrame:
+    if isinstance(processors, ColumnProcessor):
+        return processors.apply(df, src, dst)
+
     i = 0
 
     for processor in processors:

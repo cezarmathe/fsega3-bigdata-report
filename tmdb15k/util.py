@@ -31,7 +31,7 @@ def clean(df: pd.DataFrame) -> pd.DataFrame:
 Remove movies that are not in English.
 """
 def remove_non_english(df: pd.DataFrame) -> pd.DataFrame:
-    df = df[df['original_language'] in 'en']
+    df = df[df['original_language'] == 'en']
 
     return df.drop(axis='columns', columns=['original_language'])
 

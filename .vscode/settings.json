@@ -26,4 +26,5 @@
   "cSpell.words": [
     "tmdb", // TMDB - The Movie Database
   ],
+  "jupyter.notebookFileRoot": "${workspaceFolder}",
 }
