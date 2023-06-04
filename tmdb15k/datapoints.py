@@ -73,6 +73,8 @@ class Keywords:
 
         keyword_occurrences = self.df.sum().sort_values(ascending=False)
         self.columns_top_20 = keyword_occurrences.head(20).index.tolist()
+        self.columns_top_50 = keyword_occurrences.head(50).index.tolist()
+        self.columns_top_100 = keyword_occurrences.head(100).index.tolist()
 
 class ReleaseDate:
     def __init__(self, df: pd.DataFrame):
