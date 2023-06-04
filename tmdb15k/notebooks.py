@@ -2,14 +2,41 @@
 # tmdb15k/notebooks.py
 #
 
-import json
-
 import numpy as np
 import pandas as pd
+
+from sklearn.ensemble import RandomForestRegressor
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MultiLabelBinarizer
+from sklearn.tree import DecisionTreeRegressor
+
+"""Apply min-max normalization to a column in a DataFrame."""
+def normalize_min_max(df: pd.DataFrame, src: str, dst: str) -> pd.DataFrame:
+    df[dst] = (df[src] - df[src].min()) / (df[src].max() - df[src].min())
+    return df
+
+"""Apply z-score standardization to a column in a DataFrame."""
+def standardize_z_score(df: pd.DataFrame, src: str, dst: str) -> pd.DataFrame:
+    df[dst] = (df[src] - df[src].mean()) / df[src].std()
+    return df
+
+class VoteAverage:
+    def __init__(self, df: pd.DataFrame):
+        self.df = df[['vote_average']]
+        self.df.fillna(0, inplace=True)
+        self.df = normalize_min_max(self.df, 'vote_average', 'vote_average_min_max')
+        self.df = standardize_z_score(self.df, 'vote_average', 'vote_average_z_score')
+        self.columns = ['vote_average', 'vote_average_min_max', 'vote_average_z_score']
+
+class Popularity:
+    def __init__(self, df: pd.DataFrame):
+        self.df = df[['popularity']]
+        self.df.fillna(0, inplace=True)
+        self.df = normalize_min_max(self.df, 'popularity', 'popularity_min_max')
+        self.df = standardize_z_score(self.df, 'popularity', 'popularity_z_score')
+        self.columns = ['popularity', 'popularity_min_max', 'popularity_z_score']
 
 class Genres:
     def __init__(self, df: pd.DataFrame):
@@ -42,16 +69,30 @@ class Keywords:
         keyword_occurrences = self.df.sum().sort_values(ascending=False)
         self.columns_top_20 = keyword_occurrences.head(20).index.tolist()
 
+"""
+Prepare data for training and testing.
+"""
+def prepare_data(X: pd.DataFrame | list[pd.DataFrame], y: pd.Series, test_size: float = 0.2, random_state: int = 42) -> tuple[pd.DataFrame, pd.DataFrame, pd.Series, pd.Series]:
+    X_data: pd.DataFrame
+
+    if isinstance(X, list):
+        X_data = pd.concat(X, axis=1)
+    else:
+        X_data = X
+
+    X_data = X_data.fillna(0)
+    y_train = y.fillna(0)
+
+    X_train, X_test, y_train, y_test = train_test_split(X_data,
+                                                        y_train,
+                                                        test_size=test_size,
+                                                        random_state=random_state)
+
+    return X_train, X_test, y_train, y_test
+
 class ComputedLinearRegression:
-    def __init__(self, X: pd.DataFrame | list[pd.DataFrame], y: pd.Series, test_size: float = 0.2):
-        if isinstance(X, list):
-            X_train = pd.concat(X, axis=1)
-        else:
-            X_train = X
-
-        y_train = y
-
-        X_train, X_test, y_train, y_test = train_test_split(X_train, y_train, test_size=test_size, random_state=42)
+    def __init__(self, X: pd.DataFrame | list[pd.DataFrame], y: pd.Series):
+        X_train, X_test, y_train, y_test = prepare_data(X, y)
 
         self.lr = LinearRegression()
         self.lr.fit(X_train, y_train)
