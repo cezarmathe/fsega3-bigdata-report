@@ -27,4 +27,5 @@
     "tmdb", // TMDB - The Movie Database
   ],
   "jupyter.notebookFileRoot": "${workspaceFolder}",
+  "python.analysis.typeCheckingMode": "basic",
 }
