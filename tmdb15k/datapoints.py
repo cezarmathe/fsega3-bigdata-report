@@ -105,18 +105,11 @@ class ReleaseDate:
 class OriginalLanguage:
     def __init__(self, df: pd.DataFrame):
         df['original_language_filled'] = df['original_language'].fillna('none')
-        df['original_language_names'] = df['original_language_filled'].apply(lambda x: x.lower())
+        original_languages_encoded = pd.get_dummies(df['original_language_filled'], prefix='language')
 
-        mlb = MultiLabelBinarizer()
-        original_languages_encoded = mlb.fit_transform(df['original_language_names'])
-        original_language_names = mlb.classes_
+        self.columns = original_languages_encoded.columns.tolist()
+        self.df = original_languages_encoded
 
-        self.columns: list[str] = ["original_language_" + i for i in original_language_names]
-        self.df = pd.DataFrame(original_languages_encoded, columns=self.columns, index=df.index)
+        df.drop(columns=['original_language_filled'], inplace=True)
 
-        df.drop(columns=[
-            'original_languages_filled',
-            'original_languages_list',
-            'original_language_names',
-        ], inplace=True)
 
