@@ -5,6 +5,8 @@
 import numpy as np
 import pandas as pd
 
+from matplotlib import pyplot as plt
+
 from sklearn.ensemble import GradientBoostingRegressor, RandomForestRegressor
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error
@@ -91,7 +93,7 @@ class Keywords:
 Prepare data for training and testing.
 """
 def prepare_data(X: pd.DataFrame | list[pd.DataFrame],
-                 y: pd.Series,
+                 y: pd.DataFrame | pd.Series,
                  test_size: float = 0.2,
                  random_state: int = 42) -> tuple[pd.DataFrame, pd.DataFrame, pd.Series, pd.Series]:
     X_data: pd.DataFrame
@@ -112,7 +114,7 @@ def prepare_data(X: pd.DataFrame | list[pd.DataFrame],
     return X_train, X_test, y_train, y_test
 
 class ComputedLinearRegression:
-    def __init__(self, X: pd.DataFrame | list[pd.DataFrame], y: pd.Series):
+    def __init__(self, X: pd.DataFrame | list[pd.DataFrame], y: pd.DataFrame | pd.Series):
         X_train, X_test, y_train, y_test = prepare_data(X, y)
 
         self.lr = LinearRegression()
@@ -124,7 +126,7 @@ class ComputedLinearRegression:
 class ComputedDecisionTreeRegression:
     def __init__(self,
                  X: pd.DataFrame | list[pd.DataFrame],
-                 y: pd.Series,
+                 y: pd.DataFrame | pd.Series,
                  random_state: int = 42):
         X_train, X_test, y_train, y_test = prepare_data(X, y)
 
@@ -137,7 +139,7 @@ class ComputedDecisionTreeRegression:
 class ComputedRandomForestRegression:
     def __init__(self,
                  X: pd.DataFrame | list[pd.DataFrame],
-                 y: pd.Series,
+                 y: pd.DataFrame | pd.Series,
                  n_estimators: int = 100,
                  random_state: int = 42):
         X_train, X_test, y_train, y_test = prepare_data(X, y)
@@ -151,7 +153,7 @@ class ComputedRandomForestRegression:
 class ComputedGradientBoostingRegression:
     def __init__(self,
                  X: pd.DataFrame | list[pd.DataFrame],
-                 y: pd.Series,
+                 y: pd.DataFrame | pd.Series,
                  random_state: int = 42):
         X_train, X_test, y_train, y_test = prepare_data(X, y)
 
@@ -164,7 +166,7 @@ class ComputedGradientBoostingRegression:
 class ComputedXGBRegression:
     def __init__(self,
                  X: pd.DataFrame | list[pd.DataFrame],
-                 y: pd.Series,
+                 y: pd.DataFrame | pd.Series,
                  random_state: int = 42):
         X_train, X_test, y_train, y_test = prepare_data(X, y)
 
@@ -178,7 +180,9 @@ class ComputedXGBRegression:
 Analyze and test various models on the same data.
 """
 class ModelAnalysis:
-    def __init__(self, X: pd.DataFrame | list[pd.DataFrame], y: pd.Series):
+    def __init__(self,
+                 X: pd.DataFrame | list[pd.DataFrame],
+                 y: pd.DataFrame | pd.Series):
         self.lr = ComputedLinearRegression(X, y)
         self.dtr = ComputedDecisionTreeRegression(X, y)
         self.rfr = ComputedRandomForestRegression(X, y)
@@ -217,3 +221,41 @@ class ModelAnalysis:
         ]
 
         return pd.DataFrame(models, columns=['Model', 'RMSE']).sort_values(by='RMSE', ascending=True)
+
+
+class Relationship:
+    def __init__(self,
+                 name: str,
+                 x: pd.DataFrame | list[pd.DataFrame],
+                 y: pd.DataFrame | pd.Series):
+        self.name = name
+        self.x = x
+        self.y = y
+        self.analysis: ModelAnalysis | None = None
+
+    def analyze(self) -> ModelAnalysis:
+        self.analysis = ModelAnalysis(self.x, self.y)
+        return self.analysis
+
+    def print_summary(self) -> None:
+        analysis: ModelAnalysis = self.analysis if self.analysis is not None else self.analyze()
+        print(f"===> Summary | {self.name}")
+        print(analysis.summary())
+
+    def print_plot(self) -> None:
+        analysis: ModelAnalysis = self.analysis if self.analysis is not None else self.analyze()
+
+        models = ['Linear Regression', 'Decision Tree', 'Random Forest', 'Gradient Boosting', 'XGBoost']
+        mse_values = [
+            analysis.lr.mse,
+            analysis.dtr.mse,
+            analysis.rfr.mse,
+            analysis.gbr.mse,
+            analysis.xgbr.mse
+        ]
+        plt.figure(figsize=(10, 5))
+        plt.bar(models, mse_values)
+        plt.xlabel('Regression Models')
+        plt.ylabel('Mean Squared Error')
+        plt.title(f"{self.name}: Comparison of Different Regression Models")
+        plt.show()
