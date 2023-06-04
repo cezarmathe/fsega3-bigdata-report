@@ -73,3 +73,17 @@ class Keywords:
 
         keyword_occurrences = self.df.sum().sort_values(ascending=False)
         self.columns_top_20 = keyword_occurrences.head(20).index.tolist()
+
+class ReleaseDate:
+    def __init__(self, df: pd.DataFrame):
+        df['release_date'] = pd.to_datetime(df['release_date'], errors='coerce')
+        df['release_year'] = df['release_date'].dt.year
+        df['release_month'] = df['release_date'].dt.month
+        df['release_day'] = df['release_date'].dt.day
+
+        self.df: pd.DataFrame = df[['release_date', 'release_year', 'release_month', 'release_day']]
+        self.columns: list[str] = ['release_date', 'release_year', 'release_month', 'release_day']
+        self.series_datetime: pd.Series = self.df['release_date']
+        self.series_year: pd.Series = self.df['release_year']
+        self.series_month: pd.Series = self.df['release_month']
+        self.series_day: pd.Series = self.df['release_day']
