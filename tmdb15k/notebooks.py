@@ -29,6 +29,8 @@ class VoteAverage:
         self.df = normalize_min_max(self.df, 'vote_average', 'vote_average_min_max')
         self.df = standardize_z_score(self.df, 'vote_average', 'vote_average_z_score')
         self.columns = ['vote_average', 'vote_average_min_max', 'vote_average_z_score']
+        self.df_min_max = self.df['vote_average_min_max']
+        self.df_z_score = self.df['vote_average_z_score']
 
 class Popularity:
     def __init__(self, df: pd.DataFrame):
@@ -37,6 +39,20 @@ class Popularity:
         self.df = normalize_min_max(self.df, 'popularity', 'popularity_min_max')
         self.df = standardize_z_score(self.df, 'popularity', 'popularity_z_score')
         self.columns = ['popularity', 'popularity_min_max', 'popularity_z_score']
+        self.df_min_max = self.df['popularity_min_max']
+        self.df_z_score = self.df['popularity_z_score']
+
+class VoteCount:
+    def __init__(self, df: pd.DataFrame):
+        self.df = df[['vote_count']]
+        self.df.fillna(0, inplace=True)
+        self.df['vote_count_log10'] = np.log10(self.df['vote_count'] + 1)
+        self.df = normalize_min_max(self.df, 'vote_count_log10', 'vote_count_log10_min_max')
+        self.df = standardize_z_score(self.df, 'vote_count_log10', 'vote_count_log10_z_score')
+        self.columns = ['vote_count', 'vote_count_log10', 'vote_count_log10_min_max', 'vote_count_log10_z_score']
+        self.df_log10 = self.df['vote_count_log10']
+        self.df_log10_min_max = self.df['vote_count_log10_min_max']
+        self.df_log10_z_score = self.df['vote_count_log10_z_score']
 
 class Genres:
     def __init__(self, df: pd.DataFrame):
@@ -72,7 +88,10 @@ class Keywords:
 """
 Prepare data for training and testing.
 """
-def prepare_data(X: pd.DataFrame | list[pd.DataFrame], y: pd.Series, test_size: float = 0.2, random_state: int = 42) -> tuple[pd.DataFrame, pd.DataFrame, pd.Series, pd.Series]:
+def prepare_data(X: pd.DataFrame | list[pd.DataFrame],
+                 y: pd.Series,
+                 test_size: float = 0.2,
+                 random_state: int = 42) -> tuple[pd.DataFrame, pd.DataFrame, pd.Series, pd.Series]:
     X_data: pd.DataFrame
 
     if isinstance(X, list):
@@ -97,5 +116,32 @@ class ComputedLinearRegression:
         self.lr = LinearRegression()
         self.lr.fit(X_train, y_train)
         y_pred = self.lr.predict(X_test)
+        self.mse = mean_squared_error(y_test, y_pred)
+        self.rmse = np.sqrt(self.mse)
+
+class ComputedDecisionTreeRegression:
+    def __init__(self,
+                 X: pd.DataFrame | list[pd.DataFrame],
+                 y: pd.Series,
+                 random_state: int = 42):
+        X_train, X_test, y_train, y_test = prepare_data(X, y)
+
+        self.dtr = DecisionTreeRegressor(random_state=random_state)
+        self.dtr.fit(X_train, y_train)
+        y_pred = self.dtr.predict(X_test)
+        self.mse = mean_squared_error(y_test, y_pred)
+        self.rmse = np.sqrt(self.mse)
+
+class ComputedRandomForestRegression:
+    def __init__(self,
+                 X: pd.DataFrame | list[pd.DataFrame],
+                 y: pd.Series,
+                 n_estimators: int = 100,
+                 random_state: int = 42):
+        X_train, X_test, y_train, y_test = prepare_data(X, y)
+
+        self.rfr = RandomForestRegressor(n_estimators=n_estimators, random_state=random_state)
+        self.rfr.fit(X_train, y_train)
+        y_pred = self.rfr.predict(X_test)
         self.mse = mean_squared_error(y_test, y_pred)
         self.rmse = np.sqrt(self.mse)
