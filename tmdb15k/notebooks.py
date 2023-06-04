@@ -5,12 +5,14 @@
 import numpy as np
 import pandas as pd
 
-from sklearn.ensemble import RandomForestRegressor
+from sklearn.ensemble import GradientBoostingRegressor, RandomForestRegressor
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MultiLabelBinarizer
 from sklearn.tree import DecisionTreeRegressor
+
+from xgboost import XGBRegressor
 
 """Apply min-max normalization to a column in a DataFrame."""
 def normalize_min_max(df: pd.DataFrame, src: str, dst: str) -> pd.DataFrame:
@@ -145,3 +147,73 @@ class ComputedRandomForestRegression:
         y_pred = self.rfr.predict(X_test)
         self.mse = mean_squared_error(y_test, y_pred)
         self.rmse = np.sqrt(self.mse)
+
+class ComputedGradientBoostingRegression:
+    def __init__(self,
+                 X: pd.DataFrame | list[pd.DataFrame],
+                 y: pd.Series,
+                 random_state: int = 42):
+        X_train, X_test, y_train, y_test = prepare_data(X, y)
+
+        self.gbr = GradientBoostingRegressor(random_state=random_state)
+        self.gbr.fit(X_train, y_train)
+        y_pred = self.gbr.predict(X_test)
+        self.mse = mean_squared_error(y_test, y_pred)
+        self.rmse = np.sqrt(self.mse)
+
+class ComputedXGBRegression:
+    def __init__(self,
+                 X: pd.DataFrame | list[pd.DataFrame],
+                 y: pd.Series,
+                 random_state: int = 42):
+        X_train, X_test, y_train, y_test = prepare_data(X, y)
+
+        self.xgbr = XGBRegressor(random_state=random_state)
+        self.xgbr.fit(X_train, y_train)
+        y_pred = self.xgbr.predict(X_test)
+        self.mse = mean_squared_error(y_test, y_pred)
+        self.rmse = np.sqrt(self.mse)
+
+"""
+Analyze and test various models on the same data.
+"""
+class ModelAnalysis:
+    def __init__(self, X: pd.DataFrame | list[pd.DataFrame], y: pd.Series):
+        self.lr = ComputedLinearRegression(X, y)
+        self.dtr = ComputedDecisionTreeRegression(X, y)
+        self.rfr = ComputedRandomForestRegression(X, y)
+        self.gbr = ComputedGradientBoostingRegression(X, y)
+        self.xgbr = ComputedXGBRegression(X, y)
+
+    def best(self) -> str:
+        models = [
+            ('Linear Regression', self.lr.rmse),
+            ('Decision Tree Regression', self.dtr.rmse),
+            ('Random Forest Regression', self.rfr.rmse),
+            ('Gradient Boosting Regression', self.gbr.rmse),
+            ('XGB Regression', self.xgbr.rmse)
+        ]
+
+        return min(models, key=lambda x: x[1])[0]
+
+    def worst(self) -> str:
+        models = [
+            ('Linear Regression', self.lr.rmse),
+            ('Decision Tree Regression', self.dtr.rmse),
+            ('Random Forest Regression', self.rfr.rmse),
+            ('Gradient Boosting Regression', self.gbr.rmse),
+            ('XGB Regression', self.xgbr.rmse)
+        ]
+
+        return max(models, key=lambda x: x[1])[0]
+
+    def summary(self) -> pd.DataFrame:
+        models = [
+            ('Linear Regression', self.lr.rmse),
+            ('Decision Tree Regression', self.dtr.rmse),
+            ('Random Forest Regression', self.rfr.rmse),
+            ('Gradient Boosting Regression', self.gbr.rmse),
+            ('XGB Regression', self.xgbr.rmse)
+        ]
+
+        return pd.DataFrame(models, columns=['Model', 'RMSE']).sort_values(by='RMSE', ascending=True)
