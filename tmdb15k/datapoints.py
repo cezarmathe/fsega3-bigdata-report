@@ -76,14 +76,47 @@ class Keywords:
 
 class ReleaseDate:
     def __init__(self, df: pd.DataFrame):
+        now = pd.Timestamp.now()
+
         df['release_date'] = pd.to_datetime(df['release_date'], errors='coerce')
         df['release_year'] = df['release_date'].dt.year
         df['release_month'] = df['release_date'].dt.month
         df['release_day'] = df['release_date'].dt.day
 
-        self.df: pd.DataFrame = df[['release_date', 'release_year', 'release_month', 'release_day']]
-        self.columns: list[str] = ['release_date', 'release_year', 'release_month', 'release_day']
+        self.df: pd.DataFrame = df[[
+            'release_date',
+            'release_year',
+            'release_month',
+            'release_day',
+        ]]
+        self.columns: list[str] = [
+            'release_date',
+            'release_year',
+            'release_month',
+            'release_day',
+            'years_since_release',
+        ]
         self.series_datetime: pd.Series = self.df['release_date']
         self.series_year: pd.Series = self.df['release_year']
         self.series_month: pd.Series = self.df['release_month']
         self.series_day: pd.Series = self.df['release_day']
+        self.series_years_since_release: pd.Series = now.year - self.series_year
+
+class OriginalLanguage:
+    def __init__(self, df: pd.DataFrame):
+        df['original_language_filled'] = df['original_language'].fillna('none')
+        df['original_language_names'] = df['original_language_filled'].apply(lambda x: x.lower())
+
+        mlb = MultiLabelBinarizer()
+        original_languages_encoded = mlb.fit_transform(df['original_language_names'])
+        original_language_names = mlb.classes_
+
+        self.columns: list[str] = ["original_language_" + i for i in original_language_names]
+        self.df = pd.DataFrame(original_languages_encoded, columns=self.columns, index=df.index)
+
+        df.drop(columns=[
+            'original_languages_filled',
+            'original_languages_list',
+            'original_language_names',
+        ], inplace=True)
+
