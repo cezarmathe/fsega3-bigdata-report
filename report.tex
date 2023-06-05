@@ -30,6 +30,15 @@
 \usepackage{graphicx}
 \graphicspath{./assets/}
 
+% Pretty URLs.
+\usepackage[
+    colorlinks,
+    linkcolor={black},
+    menucolor={black},
+    citecolor={black},
+    urlcolor={blue}
+]{hyperref}
+
 % No page breaks between chapters.
 \usepackage{etoolbox}
 \makeatletter
@@ -46,6 +55,15 @@
 {\small\quotation
 {\bfseries\noindent{\large\abstractname}\par\nobreak\smallskip}}
 {\endquotation}
+
+% Colors.
+\usepackage[table]{xcolor}
+
+% Better tables.
+\usepackage{tabularx}
+
+% Multiple sub-rows in tables.
+\usepackage{multirow}
 
 % Metadata and title.
 \usepackage{titling}
@@ -98,12 +116,26 @@
 
 \chapter{Introducere}
 
-Industria cinematografică este una din cele mai influente și dinamice din lume.
-Filmele nu numai că au o importanță culturală semnificativă, dar reprezintă și o
-sursă importantă de venit. Predicția succesului unui film poate fi un instrument
-valoros pentru producătorii de filme, permițându-le să aloce resurse în mod
-eficient și să optimizeze strategiile de marketing. În această lucrare, încercăm
-să răspundem la două întrebări fundamentale de cercetare:
+Această lucrare își propune să cerceteze și să analizeze un set de date despre
+filme, cu scopul de a determina dacă putem prezice popularitatea sau votul mediu
+al unui film pe baza altor caracteristici. Acest lucru ar putea ajuta la
+direcționarea investițiilor în domeniu spre proiectele care ar putea avea un
+succes mai mare.
+
+Setul de date ales este TMDB 15000 Movies Dataset, provenit de pe platforma
+Kaggle
+\footnote{\url{https://www.kaggle.com/datasets/prabhakarz/tmdb-15000-movies-dataset-with-credits}}
+. Acesta conține informații despre filmele cu cele mai mari rating-uri din
+toate timpurile și include caracteristici precum limba originală a filmului,
+popularitate, data lansării, votul mediu și numărul de voturi ale fiecărui film.
+În plus, sunt disponibile informații referitoare la genuri, cuvinte cheie și
+membrii distribuției și echipei de producție.
+
+Pentru a analiza acest set de date am folosit Python (împreună cu librăriile
+numpy, pandas, scikit-learn, matplotlib, seaborn, și xgboost) în mediile
+interactive Jupyter Notebooks.
+
+Principalele întrebări de cercetare adresate în această lucrare sunt:
 
 \begin{enumerate}
   \item În ce măsură putem prezice popularitatea unui film pe baza altor
@@ -112,67 +144,220 @@ să răspundem la două întrebări fundamentale de cercetare:
         caracteristici?
 \end{enumerate}
 
-Aceste întrebări sunt relevante deoarece filmele populare sau cu voturi medii
-mari atrag multe vizionări, ceea ce poate genera venituri mai mari pentru
-producătorii de filme. Lucrarea noastră vizează determinarea relațiilor dintre
-caracteristicile de bază ale unui film și măsurătorile sale (vot mediu,
-popularitate), cu scopul de a direcționa investițiile în domeniu spre proiectele
-care ar putea avea un succes mai mare.
+În continuare vom examina setul de date pentru a determina relațiile dintre
+caracteristicile sale și pentru a crea modele care să prezică popularitatea
+sau votul mediu al fiecărui film.
 
 \chapter{Setul de date}
 
-Setul nostru de date a fost inițial colectat prin scraping de pe site-ul TMDB
+Setul de date a fost inițial colectat prin scraping de pe site-ul TMDB
 (The Movie Database), o resursă populară pentru informații despre filme și
 seriale TV. Acest set de date a fost ulterior disponibilizat pe Kaggle, o
 platformă pentru învățarea automată și analiza datelor, de către utilizatorul
-XYZ care a efectuat procesul de colectare a datelor prin intermediul API-ului
+Prabhakar Pal
+\footnote{\url{https://www.kaggle.com/prabhakarz}}
+care a efectuat procesul de colectare a datelor prin intermediul API-ului
 TMDB.
 
-Setul nostru de date include 15.000 de filme și conține o serie de
+Setul de date include aproximativ 15.000 de filme și conține o serie de
 caracteristici pentru fiecare film, cum ar fi:
 
 \begin{itemize}
-  \item Titlul filmului: Numele oficial al filmului.
-  \item Anul de lansare: Anul în care filmul a fost lansat.
-  \item Genul: Genul sau genurile cărora le aparține filmul.
-  \item Rating: Rating-ul mediu primit de film de la utilizatorii TMDB.
+  \item \textbf{Limba originală a filmului}: Limba în care a fost produs filmul.
+        Contine codul ISO 639-1 pentru limba respectivă.
+  \item \textbf{Titlul original filmului}: Numele filmului în limba originală a
+        acestuia.
+  \item \textbf{Privire de ansamblu}: O scurtă descriere a filmului.
+  \item \textbf{Data de lansare}: Anul în care filmul a fost lansat.
+  \item \textbf{Număr de voturi}: Numărul de voturi primite de film.
+  \item \textbf{Votul mediu}: Votul mediu acordat de utilizatori filmului.
+  \item \textbf{Popularitate}: Scorul de popularitate al filmului.
+  \item \textbf{Genuri}: Lista genurilor la care este asociat filmul.
+  \item \textbf{Cuvinte cheie}: Lista cuvintelor cheie asociate filmului.
+  \item \textbf{Actori}: Lista actorilor care au jucat în film.
+  \item \textbf{Echipa de producție}: Lista membrilor echipei de producție.
 \end{itemize}
-
-Și multe altele. Aceste informații oferă o imagine detaliată a fiecărui film și
-permit aplicarea metodelor de învățare automată pentru a extrage înțelesuri
-utile și a genera recomandări relevante.
 
 \chapter{Rezultate si discuții}
 
-\section{Analiza rezultatelor}
+In acest capitol vom prezenta rezultatele obtinute in urma cercetarii si
+analizei setului de date despre filme. Vom examina fiecare intrebare de
+cercetare in parte si vom discuta metodele de analiza utilizate, precum si
+rezultatele obtinute.
 
-În această secțiune, vom examina rezultatele analizei noastre asupra setului de
-date de filme. Vom aborda diferite metrici pentru a evalua performanța modelelor
-noastre și a înțelege semnificația acestor rezultate.
+\section{Intrebarea de cercetare 1: In ce masura putem prezice popularitatea unui film pe baza altor caracteristici?}
 
-\subsection{Interpretarea rezultatelor}
+Pentru a raspunde la aceasta intrebare am utilizat mai multe modele de regresie:
+linear regression, decision tree regression, random forest regression, gradient
+boost regression si XGBoost regression. Am incercat sa construim modele care sa
+ia in considerare diferite combinatii de caracteristici ale filmelor.
 
-Aici vom interpreta și explica rezultatele pe care le-am obținut în urma
-procesului de analiză. Vom încerca să identificăm modele, tendințe sau anomalii
-care pot oferi o înțelegere mai profundă a datelor noastre.
+INSERT CONTENT - Prezentarea detaliata a modelelor testate si a rezultatelor
+obtinute
 
-\section{Implicații și discuții}
+In final, cel mai bun model pentru a prezice popularitatea unui film s-a dovedit
+a fi Gradient Boosting Regression, cu o radacina medie patratica a erorii (RMSE)
+de 1.120490.
 
-Această secțiune va oferi un spațiu pentru discuții mai generale legate de
-rezultatele noastre. Vom încerca să evidențiem implicațiile acestora, precum și
-orice limitări ale analizei noastre.
+\section{Intrebarea de cercetare 2: In ce masura putem prezice votul mediu al unui film pe baza altor caracteristici?}
 
-\subsection{Impactul asupra industriei cinematografice}
+La fel ca in cazul primei intrebari de cercetare, am utilizat mai multe modele
+pentru a incerca sa prezicem votul mediu al unui film: linear regression,
+decision tree regression, random forest regression, gradient boost regression si
+XGBoost regression. Am luat in considerare diferite combinatii de caracteristici
+ale filmelor in construirea modelelor.
 
-În acest subcapitol, ne vom concentra asupra implicațiilor potențiale ale
-rezultatelor noastre asupra industriei cinematografice. În ce fel informațiile
-pe care le-am descoperit pot influența deciziile viitoare în cadrul industriei?
+INSERT CONTENT - Prezentarea detaliata a modelelor testate si a rezultatelor
+obtinute
 
-\subsection{Limitări și viitoare direcții de cercetare}
+In final, cel mai bun model pentru a prezice votul mediu al unui film s-a
+dovedit a fi Gradient Boosting Regression, cu o RMSE de 0.098926.
 
-În final, vom aborda limitările prezentei analize și vom propune potențiale
-direcții pentru cercetările viitoare. Aceasta ne va permite să înțelegem mai
-bine unde putem îmbunătăți și ce alte aspecte ar putea fi explorate în viitor.
+\section{Discutii}
+
+Rezultatele obtinute indica faptul ca este posibil sa prezicem popularitatea
+unui film sau votul mediu al acestuia pe baza altor caracteristici. Cu toate
+acestea, trebuie sa ne amintim ca exista limite ale cercetarii noastre. De
+ exemplu, setul de date utilizat poate fi incomplet sau nu reprezentativ pentru
+ industria cinematografica in ansamblu. De asemenea, este posibil ca alte
+ caracteristici ale filmelor care nu sunt incluse in acest set de date sa joace
+ un rol important in determinarea succesului lor.
+
+Astfel, pentru imbunatatirea cercetarii noastre si a preciziei predictiilor
+facute prin modelele noastre, ar putea fi necesara adaugarea altor
+caracteristici ale filmelor si extinderea setului de date utilizat.
+
+INSERT TABLE - Tabel cu rezumatul tuturor modelelor testate
+
+INSERT FIGURE - Grafic ce ilustreaza relatia dintre diferite caracteristici ale
+filmelor (vote\_average, vote\_count, popularity si release\_year)
+
+Legenda:
+
+G - Genuri, K20 - Cuvinte cheie (top 20), P - Popularitate, V - Numar de voturi
+
+\begin{table}
+  \centering
+  \renewcommand{\arraystretch}{2}
+
+  \begin{tabularx}{\textwidth}{|ccccc|ccccc|}
+    \cline{0-9}
+    \multicolumn{5}{|c|}{\textbf{Parametrii de intrare}} & \multicolumn{5}{c|}{\textbf{Modele de regresie}} \\
+    \cline{0-9}
+    % Parameters.
+    \multicolumn{1}{|c}{\textbf{G}}
+    & \multicolumn{1}{c}{\textbf{K20}}
+    & \multicolumn{1}{c}{\textbf{K50}}
+    & \multicolumn{1}{c}{\textbf{P}}
+    & \multicolumn{1}{c|}{\textbf{V}}
+    % Models.
+    & \multicolumn{1}{c}{\textbf{L}}
+    & \multicolumn{1}{c}{\textbf{DT}}
+    & \multicolumn{1}{c}{\textbf{RF}}
+    & \multicolumn{1}{c}{\textbf{GB}}
+    & \multicolumn{1}{c|}{\textbf{XGB}} \\
+    \cline{0-9}
+    X & X & & X & X
+    & \cellcolor{green!25}0.177730
+    & \cellcolor{yellow!25}0.133896
+    & \cellcolor{yellow!25}0.106875
+    & \cellcolor{yellow!25}0.098926
+    & \cellcolor{yellow!25}0.104490 \\
+    \cline{0-9}
+    X & X & & X & X
+    & \cellcolor{green!25}0.177730
+    & \cellcolor{yellow!25}0.133896
+    & \cellcolor{yellow!25}0.106875
+    & \cellcolor{yellow!25}0.098926
+    & \cellcolor{yellow!25}0.104490 \\
+    \cline{0-9}
+    X & X & & X & X
+    & \cellcolor{green!25}0.177730
+    & \cellcolor{yellow!25}0.133896
+    & \cellcolor{yellow!25}0.106875
+    & \cellcolor{yellow!25}0.098926
+    & \cellcolor{yellow!25}0.104490 \\
+    \cline{0-9}
+    X & X & & X & X
+    & \cellcolor{green!25}0.177730
+    & \cellcolor{yellow!25}0.133896
+    & \cellcolor{yellow!25}0.106875
+    & \cellcolor{yellow!25}0.098926
+    & \cellcolor{yellow!25}0.104490 \\
+    \cline{0-9}
+    X & X & & X & X
+    & \cellcolor{green!25}0.177730
+    & \cellcolor{yellow!25}0.133896
+    & \cellcolor{yellow!25}0.106875
+    & \cellcolor{yellow!25}0.098926
+    & \cellcolor{yellow!25}0.104490 \\
+    \cline{0-9}
+    X & X & & X & X
+    & \cellcolor{green!25}0.177730
+    & \cellcolor{yellow!25}0.133896
+    & \cellcolor{yellow!25}0.106875
+    & \cellcolor{yellow!25}0.098926
+    & \cellcolor{yellow!25}0.104490 \\
+    \cline{0-9}
+    X & X & & X & X
+    & \cellcolor{green!25}0.177730
+    & \cellcolor{yellow!25}0.133896
+    & \cellcolor{yellow!25}0.106875
+    & \cellcolor{yellow!25}0.098926
+    & \cellcolor{yellow!25}0.104490 \\
+    \cline{0-9}
+    X & X & & X & X
+    & \cellcolor{green!25}0.177730
+    & \cellcolor{yellow!25}0.133896
+    & \cellcolor{yellow!25}0.106875
+    & \cellcolor{yellow!25}0.098926
+    & \cellcolor{yellow!25}0.104490 \\
+    \cline{0-9}
+  \end{tabularx}
+
+  \caption{Performanta modelelor}
+  \label{tab:regression-performance}
+\end{table}
+
+% \section{Privire de ansamblu asupra datelor}
+
+
+
+% \begin{figure}
+%   \centering
+%   \includegraphics[width=0.8\textwidth]{assets/numeric_columns.png}
+%   \caption{Distribuția caracteristicilor numerice}
+% \end{figure}
+
+% \section{Analiza rezultatelor}
+
+% În această secțiune, vom examina rezultatele analizei noastre asupra setului de
+% date de filme. Vom aborda diferite metrici pentru a evalua performanța modelelor
+% noastre și a înțelege semnificația acestor rezultate.
+
+% \section{Interpretarea rezultatelor}
+
+% Aici vom interpreta și explica rezultatele pe care le-am obținut în urma
+% procesului de analiză. Vom încerca să identificăm modele, tendințe sau anomalii
+% care pot oferi o înțelegere mai profundă a datelor noastre.
+
+% \section{Implicații și discuții}
+
+% Această secțiune va oferi un spațiu pentru discuții mai generale legate de
+% rezultatele noastre. Vom încerca să evidențiem implicațiile acestora, precum și
+% orice limitări ale analizei noastre.
+
+% \section{Impactul asupra industriei cinematografice}
+
+% În acest subcapitol, ne vom concentra asupra implicațiilor potențiale ale
+% rezultatelor noastre asupra industriei cinematografice. În ce fel informațiile
+% pe care le-am descoperit pot influența deciziile viitoare în cadrul industriei?
+
+% \section{Limitări și viitoare direcții de cercetare}
+
+% În final, vom aborda limitările prezentei analize și vom propune potențiale
+% direcții pentru cercetările viitoare. Aceasta ne va permite să înțelegem mai
+% bine unde putem îmbunătăți și ce alte aspecte ar putea fi explorate în viitor.
 
 \chapter{Concluzia}
 
