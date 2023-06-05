@@ -1,0 +1,102 @@
+
+\begin{table}
+  \centering
+  \renewcommand{\arraystretch}{2}
+  \setlength{\arrayrulewidth}{0.5mm}
+  \begin{tabularx}{\textwidth}{cccccc|ccccc}
+    \multicolumn{6}{c|}{\textbf{Parametrii de intrare}} & \multicolumn{5}{c}{\textbf{Modele de regresie}} \\
+    \cline{0-10}
+    % Parameters.
+    \rowcolor{gray!25}
+
+        \multicolumn{1}{c}{\textbf{G}}
+        & \multicolumn{1}{c}{\textbf{K20}}
+        & \multicolumn{1}{c}{\textbf{K50}}
+        & \multicolumn{1}{c}{\textbf{K100}}
+        & \multicolumn{1}{c}{\textbf{Va}}
+        & \multicolumn{1}{c|}{\textbf{Vc}}
+        % Models.
+        & \multicolumn{1}{c}{\textbf{L}}
+        & \multicolumn{1}{c}{\textbf{DT}}
+        & \multicolumn{1}{c}{\textbf{RF}}
+        & \multicolumn{1}{c}{\textbf{GB}}
+        & \multicolumn{1}{c}{\textbf{XGB}} \\
+        \cline{0-10}
+
+        X &  & X &  &  & X
+        & 1.11761
+        & 1.07040
+        & 1.13712
+        & 1.17415
+        & 1.25839 \\
+
+         &  & X &  & X & X
+        & 1.11671
+        & 1.26242
+        & 1.12481
+        & 1.10290
+        & 1.11901 \\
+
+        X &  & X &  &  &
+        & 1.12039
+        & 1.16990
+        & 1.10402
+        & 1.15218
+        & 1.13616 \\
+
+         &  &  & X & X & X
+        & 1.11773
+        & 1.44152
+        & 1.15478
+        & 1.10864
+        & 1.11149 \\
+
+         &  & X &  &  & X
+        & 1.11671
+        & 1.28159
+        & 1.13687
+        & 1.11159
+        & 1.13244 \\
+
+         & X &  &  & X & X
+        & 1.11408
+        & 1.12185
+        & 1.12484
+        & 1.11261
+        & 1.12237 \\
+
+         & X &  &  &  & X
+        & 1.11409
+        & 1.14186
+        & 1.13502
+        & 1.13274
+        & 1.12592 \\
+
+         & X &  &  & X &
+        & 1.11664
+        & 1.32812
+        & 1.18910
+        & 1.13383
+        & 1.11459 \\
+
+         &  &  & X &  & X
+        & 1.11773
+        & 1.38466
+        & 1.14683
+        & 1.13655
+        & 1.11486 \\
+
+        X &  &  &  & X & X
+        & 1.11524
+        & 1.18550
+        & 1.16255
+        & 1.30685
+        & 1.36185 \\
+
+  \end{tabularx}
+
+  \caption{
+    Performanta modelelor in a prezice popularitatea pentru diferite combinatii
+    de parametri de intrare.}
+  \label{tab:models_performance_p}
+\end{table}
