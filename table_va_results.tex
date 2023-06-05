@@ -3,6 +3,12 @@
   \centering
   \renewcommand{\arraystretch}{2}
   \setlength{\arrayrulewidth}{0.5mm}
+
+  \caption{
+    \textbf{RMSE} pentru diferite combinații de parametrii de intrare și modele
+    de regresie pentru setul de date \textbf{Va}.
+  }
+
   \begin{tabularx}{\textwidth}{cccccc|ccccc}
     \multicolumn{6}{c|}{\textbf{Parametrii de intrare}} & \multicolumn{5}{c}{\textbf{Modele de regresie}} \\
     \cline{0-10}
@@ -35,48 +41,48 @@
         & 0.11713
         & 0.10545
         & \cellcolor{green!50} 0.09840
-        & \cellcolor{green!10} 0.09871 \\
+        & \cellcolor{green!15} 0.09871 \\
 
         X &  & X &  &  & X
         & 0.17752
         & 0.11806
         & 0.10605
         & \cellcolor{green!30} 0.09865
-        & 0.10019 \\
+        & \cellcolor{red!15} 0.10019 \\
 
         X &  & X &  & X & X
         & 0.17752
         & 0.13337
         & 0.10649
-        & 0.09873
+        & \cellcolor{yellow!75} 0.09873
         & 0.10422 \\
 
         X & X &  &  &  & X
         & 0.17772
         & 0.12021
         & 0.10689
-        & 0.09885
+        & \cellcolor{yellow!50} 0.09885
         & 0.10027 \\
 
         X &  &  &  &  & X
         & 0.17833
         & 0.12032
         & 0.10818
-        & 0.09891
+        & \cellcolor{yellow!30} 0.09891
         & 0.10146 \\
 
         X & X &  &  & X & X
         & 0.17772
         & 0.13389
         & 0.10687
-        & 0.09892
+        & \cellcolor{yellow!15} 0.09892
         & 0.10449 \\
 
         X &  &  &  & X & X
         & 0.17833
         & 0.13562
         & 0.10783
-        & 0.09893
+        & \cellcolor{red!30} 0.09893
         & 0.10613 \\
 
          &  &  & X & X & X
@@ -92,11 +98,7 @@
         & 0.10308
         & 0.10036
         & 0.10094 \\
-
   \end{tabularx}
 
-  \caption{
-    Performanta modelelor in a prezice votul mediu pentru diferite combinatii de
-    parametri de intrare.}
   \label{tab:models_performance_va}
 \end{table}
