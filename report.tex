@@ -185,45 +185,42 @@ filme, precum și descrierea transformărilor care au fost aplicate acestuia. Î
 același timp, sunt furnizate răspunsuri la întrebările de cercetare, formulate
 anterior în capitolul \hyperref[chapter:introducere]{\textit{Introducere}}.
 
+\section{Analiza și transformarea Setului de Date}
 
+Setul de date include câteva coloane cu valori numerice care s-ar putea dovedi
+relevante pentru investigația noastră: \textbf{vote\_average} (denumit în cadrul
+lucrării ca \textbf{Va}), \textbf{vote\_count} (referit în lucrare ca
+\textbf{Vc}) și \textbf{popularity} (abreviat în lucrare ca \textbf{P}). În
+analiza acestor coloane cu valori numerice am inclus și \textbf{release\_date}
+cu scopul de a încerca să identificăm potențiale corelații.
 
-\section{Analiza si transformarea setului de date}
+Valoarea coloanei \textbf{vote\_average} se situează în intervalul de la 0 la 10
+și prezintă o deviație standard redusă (2.555917). Am normalizat această coloană
+utilizând metoda min-max, astfel încât valorile sale să se încadreze între 0 și
+1.
 
-\subsection{Analiza si vizualizarea datelor}
+Coloana \textbf{vote\_count} are valoarea maximă (33495) de 2 ordine de
+magnitudine mai mare decât valoarea mediană (292), iar deviația standard
+(2366.743281) este de asemenea semnificativă. Am aplicat logaritmarea în baza 10
+urmată de standardizarea bazată pe scorul Z pentru a aduce valorile coloanei
+într-un interval adecvat pentru analiză.
 
-Setul de date contine cateva coloane numerice care ar putea fi de interes
-pentru analiza noastra: \textbf{vote\_average} (prescurtat in lucrare ca
-\textbf{Va}), \textbf{vote\_count} (prescurtat in lucrare ca \textbf{Vc}) si
-\textbf{popularity} (prescurtat in lucrare ca \textbf{P}). In analiza coloanelor
-numerice am inclus si \textbf{release\_date} pentru a incerca sa distingem
-potentiale corelatii.
-
-Coloana \textbf{vote\_average} se incadreaza intre 0 si 10 si are o deviere
-standard mica (2.555917). Am normalizat aceasta coloana folosing metoda
-min-max, astfel incat sa se incadreze intre 0 si 1.
-
-Coloana \textbf{vote\_count} are valoarea maxima (33495) cu 2 ordine de
-magnitudine mai mare decat valoarea mediana (292), iar devierea standard
-(2366.743281) este foarte mare. Am aplicat logaritmul in baza 10 iar apoi
-standardizarea in functie de scorul Z pentru a aduce coloana intr-un interval
-potrivit pentru analiza.
-
-Coloana \textbf{popularity}, conform descrierii, se incadreaza intre 0 si 100.
-Dupa examinarea datelor am constatat ca, desi majoritatea datelor se incadreaza
-in acest interval, exista valori care depasesc pragul maxim - devierea standard
-(114.493917) este foarte mare. Am aplicat si pentru aceasta coloana
-standardizarea in functie de scorul Z.
+Coloana \textbf{popularity}, conform descrierii, se încadrează în intervalul de
+la 0 la 100. Prin examinarea datelor, am observat că, deși majoritatea valorilor
+sunt cuprinse în acest interval, există cazuri care depășesc limita superioară -
+deviația standard (114.493917) fiind semnificativă. Pentru această coloană am
+aplicat de asemenea standardizarea în funcție de scorul Z.
 
 \begin{figure}
   \centering
 
   \includegraphics[width=0.8\textwidth]{assets/numeric_columns.png}
 
-  \caption{Privire de ansamblu asupra coloanelor numerice, dupa transformari}
+  \caption{Privire de ansamblu asupra coloanelor numerice, după transformări}
   \label{fig:numeric_columns}
 \end{figure}
 
-O vedere de ansamblu a acestor coloane, dupa transformari, se poate observa in
+O vedere de ansamblu a acestor coloane, dupa transformări, se poate observa în
 Figura \ref{fig:numeric_columns}.
 
 \begin{figure}
@@ -231,7 +228,7 @@ Figura \ref{fig:numeric_columns}.
 
   \includegraphics[width=0.65\textwidth]{assets/boxplot_genres_popularity.png}
 
-  \caption{Relatia dintre genuri si popularitate}
+  \caption{Relația dintre genuri (\textbf{G}) și popularitate (\textbf{P})}
   \label{fig:genres_p}
 \end{figure}
 
@@ -240,7 +237,7 @@ Figura \ref{fig:numeric_columns}.
 
   \includegraphics[width=0.65\textwidth]{assets/boxplot_genres_vote_average.png}
 
-  \caption{Relatia dintre genuri si votul mediu}
+  \caption{Relația dintre genuri (\textbf{G}) și votul mediu (\textbf{Va})}
   \label{fig:genres_va}
 \end{figure}
 
@@ -249,7 +246,7 @@ Figura \ref{fig:numeric_columns}.
 
   \includegraphics[width=0.65\textwidth]{assets/boxplot_keywords_popularity.png}
 
-  \caption{Relatia dintre cuvinte cheie (top 20) si popularitate}
+  \caption{Relația dintre cuvinte-cheie (\textbf{K20}) și popularitate (\textbf{P})}
   \label{fig:keywords_p}
 \end{figure}
 
@@ -258,85 +255,86 @@ Figura \ref{fig:numeric_columns}.
 
   \includegraphics[width=0.65\textwidth]{assets/boxplot_keywords_vote_average.png}
 
-  \caption{Relatia dintre cuvinte cheie (top 20) si votul mediu}
+  \caption{Relația dintre cuvinte-cheie (\textbf{K20}) și votul mediu (\textbf{Va})}
   \label{fig:keywords_va}
 \end{figure}
 
-Pentru analiza vom folosi si doua coloane categorice: \textbf{genres} si
-\textbf{keywords}. Acestea contin informatii despre genurile si cuvintele cheie
-ale filmelor. Pentru a putea analiza aceste coloane am aplicat o transformare
-de tip one-hot encoding, astfel incat sa obtinem o coloana pentru fiecare gen
-sau cuvant cheie. In total am obtinut 19 coloane pentru genuri si peste 100 de
-coloane pentru cuvinte cheie. Relatia dintre genuri si popularitate se poate
-observa in Figura \ref{fig:genres_p}, relatia dintre genuri si votul mediu se
-poate observa in Figura \ref{fig:genres_va}, relatia dintre cuvinte cheie si
-popularitate se poate observa in Figura \ref{fig:keywords_p}, iar relatia
-dintre cuvinte cheie si votul mediu se poate observa in Figura
-\ref{fig:keywords_va}.
+În procesul analitic vom avea în vedere și două coloane pentru categorizare:
+\textbf{genres} și \textbf{keywords}. Acestea cuprind informații referitoare la
+genurile și cuvintele-cheie asociate fiecărui film. În vederea unei
+analize eficiente a acestor coloane am recurs la implementarea unei
+transformări de tip one-hot encoding, astfel încât am obținut o coloană
+distinctă pentru fiecare gen sau cuvânt-cheie. În total, am generat 19 coloane
+pentru genuri și peste 100 de coloane pentru cuvinte-cheie. Corelația dintre
+genuri și popularitate poate fi vizualizată în Figura \ref{fig:genres_p}, în
+timp ce relația dintre genuri și votul mediu este ilustrată în Figura
+\ref{fig:genres_va}. Corelația dintre cuvinte-cheie și popularitate este
+evidențiată în Figura \ref{fig:keywords_p}, iar relația dintre cuvinte-cheie și
+votul mediu poate fi observată în Figura \ref{fig:keywords_va}.
 
 \clearpage
 
 \section{
-  In ce masura putem prezice popularitatea unui film pe baza altor
-  caracteristici?
+  Gradul de predictibilitate a popularității unui film în funcție de alte
+  caracteristici
 }
 
-Pentru a determina in ce masura putem prezice popularitatea unui film pe baza
-altor caracteristici am decis sa incercam diferite combinatii de parametri de
-intrare cu diferite modele de regresie. Pentru fiecare combinatie de parametri
-de intrare si model de regresie am calculat radacina medie patratica a erorii
-(RMSE) pentru a determina cat de bine se potrivesc datele cu modelul.
-Rezultatele se gasesc, in ordinea performantei, in Tabela
+În dorința de a stabili măsura în care putem prezice popularitatea unui film pe
+baza altor atribute, am optat pentru experimentarea diverselor combinații de
+parametri de intrare și modele de regresie. Pentru fiecare asociere de parametri
+de intrare și model de regresie, am calculat eroarea pătratică medie (RMSE -
+Root Mean Square Error) în vederea determinării nivelului de adecvare a datelor
+la model. Rezultatele sunt prezentate, în ordinea performanței, în Tabela
 \ref{tab:models_performance_p}.
 
 Parametrii de intrare sunt:
 
 \begin{itemize}
-  \item \textbf{G} - Genurile filmului
-  \item \textbf{K20} - Cuvintele cheie (top 20)
-  \item \textbf{K50} - Cuvintele cheie (top 50)
-  \item \textbf{K100} - Cuvintele cheie (top 100)
-  \item \textbf{Va} - Votul mediu al filmului
-  \item \textbf{Vc} - Numarul de voturi ale filmului
+  \item \textbf{G} - Genurile asociate filmului
+  \item \textbf{K20} - Cuvintele-cheie (top 20)
+  \item \textbf{K50} - Cuvintele-cheie (top 50)
+  \item \textbf{K100} - Cuvintele-cheie (top 100)
+  \item \textbf{Va} - Evaluarea medie a filmului
+  \item \textbf{Vc} - Numărul de voturi ale filmului
 \end{itemize}
 
-In urma analizei am constatat ca nu putem prezice cu certitudine popularitatea
-filmului pe baza parametrilor de intrare sus-mentionati. RMSE se afla mai
-aproape de 1 decat de 0 (e chiar mai mare decat 1), iar popularitatea a fost
-standardizata la o scara redusa, motiv pentru care am ajuns la aceasta
-concluzie.
+Pe baza evaluării efectuate am ajuns la concluzia că popularitatea unui film nu
+poate fi prezisă cu precizie pe baza parametrilor de intrare menționați
+anterior. Valoarea RMSE se situează mai aproape de 1 decât de 0 (de fapt, este
+chiar peste 1), iar popularitatea a fost standardizată la o scală restrânsă,
+fapt ce a condus la această concluzie.
 
 \section{
-  In ce masura putem prezice votul mediu al unui film pe baza altor
-  caracteristici?
+  Determinarea gradului de predictibilitate a evaluării medii a unui film în
+  funcție de alte caracteristici
 }
 
-Pentru a determina in ce masura putem prezice votul mediu al unui film pe baza
-altor caracteristici am decis sa incercam diferite combinatii de parametri de
-intrare cu diferite modele de regresie. Pentru fiecare combinatie de parametri
-de intrare si model de regresie am calculat radacina medie patratica a erorii
-(RMSE) pentru a determina cat de bine se potrivesc datele cu modelul.
-Rezultatele se gasesc, in ordinea performantei, in Tabela
-\ref{tab:models_performance_va}.
+În demersul nostru de a evalua măsura în care putem anticipa evaluarea medie a
+unui film pe baza altor atribute, am ales să testăm diverse combinații de
+parametri de intrare cu diferite modele de regresie. Pentru fiecare asociație de
+parametri de intrare și model de regresie, am calculat indicele RMSE în scopul
+determinării gradului de adecvare a
+datelor la modelul respectiv. Rezultatele sunt prezentate, în ordinea
+eficacității, în Tabela \ref{tab:models_performance_va}.
 
 Parametrii de intrare sunt:
 
 \begin{itemize}
-  \item \textbf{G} - Genurile filmului
-  \item \textbf{K20} - Cuvintele cheie (top 20)
-  \item \textbf{K50} - Cuvintele cheie (top 50)
-  \item \textbf{K100} - Cuvintele cheie (top 100)
+  \item \textbf{G} - Genurile asociate filmului
+  \item \textbf{K20} - Cuvintele-cheie (top 20)
+  \item \textbf{K50} - Cuvintele-cheie (top 50)
+  \item \textbf{K100} - Cuvintele-cheie (top 100)
   \item \textbf{P} - Popularitatea filmului
-  \item \textbf{Vc} - Numarul de voturi ale filmului
+  \item \textbf{Vc} - Numărul de voturi ale filmului
 \end{itemize}
 
-In urma analizei putem observa ca Gradient Boosting este regresia ce ofera cele
-mai bune rezultate pentru fiecare combinatie de parametrii de intrare pe care am
-folosit-o. De asemenea, si XGBoost ofera rezultate competitive pentru anumite
-combinatii.
+Analiza efectuată a evidențiat că modelul de regresie Gradient Boosting
+furnizează cele mai bune rezultate pentru fiecare combinație de parametri de
+intrare utilizată. De asemenea, modelul XGBoost oferă rezultate competitive
+pentru anumite combinații.
 
-Acesta e clasamentul modelelor in functie de parametrii de intrare si modelul
-de regresie folosit:
+Iată clasamentul modelelor în funcție de parametrii de intrare și modelul de
+regresie utilizat:
 
 \begin{enumerate}
   \item \textbf{Gradient Boosting} - G, K100, P, Vc
@@ -346,20 +344,22 @@ de regresie folosit:
   \item \textbf{Gradient Boosting} - G, K50, P, Vc
 \end{enumerate}
 
-\section{Limitări și direcții viitoare de cercetare}
+\section{Constrângeri și direcții prospectabile de cercetare}
 
-In urma experimentelor am observat ca popularitatea nu poate fi prezisa cu
-certitudine pe baza parametrilor pe care i-am folosit, dar aceasta este utila
-la prezicerea votului mediu. De asemenea, un numar important de coloane a ramas
-neabordat, motiv care ar putea explica de ce nu am obtinut rezultate pertinente
-cu privire la prezicerea popularitatii filmelor, iar setului de date ii
-lipseste bugetul fiecarui film. Bugetul si echipa din spatele fiecarui film
-reprezinta doi factori foarte importanti in producerea filmelor de calitate.
+Pe parcursul desfășurării experimentelor am observat că popularitatea nu poate
+fi anticipată cu certitudine, raportându-ne la parametrii pe care i-am utilizat,
+însă aceasta se dovedește a fi utilă în previziunea votului mediu. De asemenea,
+un număr semnificativ de coloane nu a fost luat în considerare, fapt care ar
+putea justifica de ce nu am obținut rezultate relevante în ceea ce privește
+prezicerea popularității filmelor. În plus, setul de date nu cuprinde bugetul
+alocat fiecărui film. Bugetul și echipa din spatele fiecărui film constituie doi
+factori esențiali în producerea filmelor de calitate.
 
-Pe viitor, ne propunem abordarea coloanelor \textbf{cast} si \textbf{crew}
-pentru a incerca sa prezicem popularitatea si votul mediu, deoarece echipa din
-spatele fiecarui film reprezinta un factor important in calitatea si
-popularitatea acestora.
+În ceea ce privește direcțiile viitoare de cercetare, ne propunem să luăm în
+considerare coloanele \textbf{cast} și \textbf{crew} pentru a încerca să
+anticipăm popularitatea și votul mediu, întrucât echipa implicată în realizarea
+fiecărui film reprezintă un factor determinant în calitatea și popularitatea
+acestora.
 
 \chapter{Concluzia}
 
@@ -371,11 +371,6 @@ precum limba originală a filmului, popularitate, data lansării, votul mediu,
 numărul de voturi, genuri, cuvinte cheie și membrii distribuției și echipei de
 producție.
 
-Analiza a fost realizată folosind un set divers de modele de învățare automată
-și diferite metode de prelucrare a datelor, inclusiv one-hot encoding pentru
-coloanele categorice, normalizare și standardizare pentru coloanele numerice și
-logaritmarea pentru coloanele cu distribuții înclinate.
-
 Rezultatele analizei noastre arată că prezicerea popularității filmelor este un
 proces complex, care nu poate fi realizat cu un grad ridicat de precizie doar pe
 baza caracteristicilor disponibile în setul nostru de date. Cu toate acestea, am
@@ -384,17 +379,6 @@ folosind o combinație de caracteristici, incluzând genurile filmelor, cuvintel
 cheie asociate, popularitatea și numărul de voturi. Aceste rezultate sugerează
 că popularitatea și votul mediu al filmelor sunt determinate de o serie complexă
 de factori, dintre care unii pot să nu fie disponibili în setul nostru de date.
-
-În viitor, ar putea fi utilă includerea altor caracteristici în analiză, cum ar
-fi bugetul filmului, veniturile obținute, premiile câștigate sau detalii mai
-specifice despre membrii distribuției și echipei de producție. De asemenea, ar
-putea fi interesantă explorarea unor metode mai avansate de învățare automată
-sau de prelucrare a datelor pentru a îmbunătăți rezultatele prezicerilor
-noastre.
-
-Deși rezultatele noastre au fost mixte, lucrarea noastră demonstrează
-potențialul analizei de date și al învățării automate în domeniul filmului și
-oferă o bază solidă pentru cercetări viitoare în acest domeniu.
 
 \include{table_p_results}
 \include{table_va_results}
